@@ -1,0 +1,17 @@
+---
+- hosts: all
+
+  tasks:
+    - name: Add user
+      user: name=test state=present
+    - name: create .ssh folder
+      file: dest=/home/test/.ssh state=directory owner=test group=test mode=700
+    - name: create authorized keys
+      file: dest=/home/test/.ssh/authorized_keys state=touch owner=test group=test mode=644
+    - name: copy content to authorized_keys
+      copy: src=/home/ansible/.ssh/id_rsa.pub dest=/home/test/.ssh/authorized_keys
+    - name: giving sudo permission for user
+      lineinfile:
+       path: /etc/sudors
+       line: 'test ALL=(ALL)   NOPASSWD: ALL'
+       state: present
